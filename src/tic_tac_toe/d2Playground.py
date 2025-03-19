@@ -137,10 +137,3 @@ class D2Playground:
             plt.show()
         else:
             return figure
-
-
-if __name__ == "__main__":
-    pg = D2Playground()
-    pg.circle = [[1.5, 0.5], [0.5, 0.5], [0.5, 2.5]]
-    pg.cross = [[1.5, 0.5], [1.5, 1.5], [1.5, 2.5]]
-    pg.RenderPlayground(pg.circle, pg.cross)

@@ -5,3 +5,10 @@ description = "Regression testing for tic-tac-toe"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = ["matplotlib>=3.10.1", "pyside6>=6.8.2.1"]
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project.scripts]
+tic-tac-toe = "tic_tac_toe.__main__:main"

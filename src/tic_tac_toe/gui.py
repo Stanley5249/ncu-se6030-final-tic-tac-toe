@@ -1,12 +1,10 @@
-import sys
-
 import PySide6.QtCore as QtCore
 import PySide6.QtGui as QtGui
 import PySide6.QtWidgets as QtWidgets
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanva
 
-from d2Playground import D2Playground
+from .d2Playground import D2Playground
 
 
 class MyWidget(QtWidgets.QWidget):
@@ -26,15 +24,11 @@ class MyWidget(QtWidgets.QWidget):
     def ui(self):
         self.box = QtWidgets.QWidget(self)
         self.box.setGeometry(0, 0, 300, 600)
-        self.grid = QtWidgets.QGridLayout(self.box)  
+        self.grid = QtWidgets.QGridLayout(self.box)
 
-        self.GameStartBtn = QtWidgets.QPushButton(
-            self
-        )
+        self.GameStartBtn = QtWidgets.QPushButton(self)
         self.GameStartBtn.setText("開始遊戲")
-        self.GameStartBtn.setAutoDefault(
-            True
-        )
+        self.GameStartBtn.setAutoDefault(True)
         self.GameStartBtn.setShortcut("Ctrl+S")
         self.GameStartBtn.clicked.connect(self.onGameStartBtnPressed)
         self.grid.addWidget(self.GameStartBtn, 3, 0)
@@ -88,7 +82,7 @@ class MyWidget(QtWidgets.QWidget):
         self.PlaygroundGS.setSceneRect(0, 0, GSsize, GSsize)
         self.PlaygroundGV.setScene(self.PlaygroundGS)
 
-    def keyPressEvent(self, event): 
+    def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key.Key_Escape:
             QtCore.QCoreApplication.instance().quit()
             self.close()
@@ -155,10 +149,3 @@ class MyWidget(QtWidgets.QWidget):
         self.PlaygroundGS.addWidget(self.PlaygroundCanvas)
         self.PlaygroundGV.setGeometry(320, 0, self.GVsize, self.GVsize)
         self.PlaygroundGV.setScene(self.PlaygroundGS)
-
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    Form = MyWidget()
-    Form.show()
-    sys.exit(app.exec())
