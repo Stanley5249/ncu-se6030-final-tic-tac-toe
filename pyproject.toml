@@ -10,5 +10,5 @@ dependencies = ["matplotlib>=3.10.1", "pyside6>=6.8.2.1"]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
-[project.scripts]
+[project.gui-scripts]
 tic-tac-toe = "tic_tac_toe.__main__:main"
