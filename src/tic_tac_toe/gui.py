@@ -2,7 +2,7 @@ import PySide6.QtCore as QtCore
 import PySide6.QtGui as QtGui
 import PySide6.QtWidgets as QtWidgets
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanva
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 
 from .d2Playground import D2Playground
 
@@ -84,7 +84,9 @@ class MyWidget(QtWidgets.QWidget):
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key.Key_Escape:
-            QtCore.QCoreApplication.instance().quit()
+            instance = QtCore.QCoreApplication.instance()
+            if instance is not None:
+                instance.quit()
             self.close()
         elif event.key() == QtCore.Qt.Key.Key_F11:
             if self.isMaximized():
@@ -144,7 +146,7 @@ class MyWidget(QtWidgets.QWidget):
 
     def setNextGraphView(self):
         next_fig = self.pg.RenderPlayground(self.pg.circle, self.pg.cross)
-        self.PlaygroundCanvas = FigureCanva(next_fig)
+        self.PlaygroundCanvas = FigureCanvasQTAgg(next_fig)
         self.PlaygroundGS.clear()
         self.PlaygroundGS.addWidget(self.PlaygroundCanvas)
         self.PlaygroundGV.setGeometry(320, 0, self.GVsize, self.GVsize)
