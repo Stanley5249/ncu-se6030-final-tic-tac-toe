@@ -24,7 +24,7 @@
 
     ```sh
     git clone <repo-url> .
-    pip install . -e
+    pip install -e .
     ```
 
     Otherwise, you can install directly from the repository:
