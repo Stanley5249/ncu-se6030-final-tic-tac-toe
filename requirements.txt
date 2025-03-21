@@ -6,8 +6,12 @@ cycler==0.12.1
     # via matplotlib
 fonttools==4.56.0
     # via matplotlib
+jinja2==3.1.6
+    # via qt-material
 kiwisolver==1.4.8
     # via matplotlib
+markupsafe==3.0.2
+    # via jinja2
 matplotlib==3.10.1
     # via tic-tac-toe (./pyproject.toml)
 numpy==2.2.3
@@ -30,6 +34,8 @@ pyside6-essentials==6.8.2.1
     #   pyside6-addons
 python-dateutil==2.9.0.post0
     # via matplotlib
+qt-material==2.14
+    # via tic-tac-toe (./pyproject.toml)
 shiboken6==6.8.2.1
     # via
     #   pyside6

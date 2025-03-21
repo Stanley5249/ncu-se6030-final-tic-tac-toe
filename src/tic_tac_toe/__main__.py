@@ -1,16 +1,19 @@
 import sys
 
-from PySide6 import QtGui, QtWidgets
+from PySide6 import QtWidgets
+from qt_material import apply_stylesheet
 
-from .gui import MyWidget
+from .gui import MainWindow
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    app.setPalette(QtGui.QPalette(QtGui.QColor("#222")))
-    Form = MyWidget()
-    Form.show()
-    sys.exit(app.exec())
+    apply_stylesheet(app, theme="dark_teal.xml")
+
+    window = MainWindow()
+    window.show()
+
+    sys.exit(app.exec_())
 
 
 if __name__ == "__main__":

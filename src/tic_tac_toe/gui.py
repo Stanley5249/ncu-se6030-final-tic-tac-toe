@@ -1,88 +1,132 @@
-import PySide6.QtCore as QtCore
-import PySide6.QtGui as QtGui
-import PySide6.QtWidgets as QtWidgets
+from typing import override
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from .d2Playground import D2Playground
 
 
-class MyWidget(QtWidgets.QWidget):
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("OOXX")
         self.resize(1000, 600)
         self.setStyleSheet("QWidget { font: 14px Microsoft JhengHei; }")
         self.setUpdatesEnabled(True)
-        Icon = QtGui.QIcon()
-        self.setWindowIcon(Icon)
+        icon = QtGui.QIcon()
+        self.setWindowIcon(icon)
         self.setWindowIconText("OOXX")
         self.ui()
 
         self.pg = D2Playground()
 
-    def ui(self):
-        self.box = QtWidgets.QWidget(self)
-        self.box.setGeometry(0, 0, 300, 600)
-        self.grid = QtWidgets.QGridLayout(self.box)
+    def ui(self) -> None:
+        self.central_widget = QtWidgets.QWidget(self)
+        self.setCentralWidget(self.central_widget)
 
-        self.GameStartBtn = QtWidgets.QPushButton(self)
-        self.GameStartBtn.setText("開始遊戲")
-        self.GameStartBtn.setAutoDefault(True)
-        self.GameStartBtn.setShortcut("Ctrl+S")
-        self.GameStartBtn.clicked.connect(self.onGameStartBtnPressed)
-        self.grid.addWidget(self.GameStartBtn, 3, 0)
+        self.main_layout = QtWidgets.QHBoxLayout(self.central_widget)
 
-        self.btn11 = QtWidgets.QPushButton(self)
-        self.btn11.setText("11")
-        self.btn11.clicked.connect(lambda: self.onPlaceBtnPressed(1, 1))
-        self.grid.addWidget(self.btn11, 2, 0)
-        self.btn12 = QtWidgets.QPushButton(self)
-        self.btn12.setText("12")
-        self.btn12.clicked.connect(lambda: self.onPlaceBtnPressed(1, 2))
-        self.grid.addWidget(self.btn12, 1, 0)
-        self.btn13 = QtWidgets.QPushButton(self)
-        self.btn13.setText("13")
-        self.btn13.clicked.connect(lambda: self.onPlaceBtnPressed(1, 3))
-        self.grid.addWidget(self.btn13, 0, 0)
-        self.btn21 = QtWidgets.QPushButton(self)
-        self.btn21.setText("21")
-        self.btn21.clicked.connect(lambda: self.onPlaceBtnPressed(2, 1))
-        self.grid.addWidget(self.btn21, 2, 1)
-        self.btn22 = QtWidgets.QPushButton(self)
-        self.btn22.setText("22")
-        self.btn22.clicked.connect(lambda: self.onPlaceBtnPressed(2, 2))
-        self.grid.addWidget(self.btn22, 1, 1)
-        self.btn23 = QtWidgets.QPushButton(self)
-        self.btn23.setText("23")
-        self.btn23.clicked.connect(lambda: self.onPlaceBtnPressed(2, 3))
-        self.grid.addWidget(self.btn23, 0, 1)
-        self.btn31 = QtWidgets.QPushButton(self)
-        self.btn31.setText("31")
-        self.btn31.clicked.connect(lambda: self.onPlaceBtnPressed(3, 1))
-        self.grid.addWidget(self.btn31, 2, 2)
-        self.btn32 = QtWidgets.QPushButton(self)
-        self.btn32.setText("32")
-        self.btn32.clicked.connect(lambda: self.onPlaceBtnPressed(3, 2))
-        self.grid.addWidget(self.btn32, 1, 2)
-        self.btn33 = QtWidgets.QPushButton(self)
-        self.btn33.setText("33")
-        self.btn33.clicked.connect(lambda: self.onPlaceBtnPressed(3, 3))
-        self.grid.addWidget(self.btn33, 0, 2)
+        self.left_panel = QtWidgets.QWidget()
+        self.left_layout = QtWidgets.QVBoxLayout(self.left_panel)
 
-        self.StatusLabel = QtWidgets.QLabel(self)
-        self.StatusLabel.setText("狀態：\n")
-        self.grid.addWidget(self.StatusLabel, 7, 0)
+        self.game_board_widget = QtWidgets.QWidget()
+        self.game_board_layout = QtWidgets.QGridLayout(self.game_board_widget)
 
-        self.GVsize = 600
-        GSsize = self.GVsize
-        self.PlaygroundGV = QtWidgets.QGraphicsView(self)
-        self.PlaygroundGV.setGeometry(320, 0, self.GVsize, self.GVsize)
-        self.PlaygroundGS = QtWidgets.QGraphicsScene()
-        self.PlaygroundGS.setSceneRect(0, 0, GSsize, GSsize)
-        self.PlaygroundGV.setScene(self.PlaygroundGS)
+        self.create_game_buttons()
 
-    def keyPressEvent(self, event):
+        self.control_panel_widget = QtWidgets.QWidget()
+        self.control_panel_layout = QtWidgets.QVBoxLayout(self.control_panel_widget)
+
+        self.game_start_btn = QtWidgets.QPushButton()
+        self.game_start_btn.setText("開始遊戲")
+        self.game_start_btn.setAutoDefault(True)
+        self.game_start_btn.setShortcut("Ctrl+S")
+        self.game_start_btn.clicked.connect(self.on_game_start_btn_pressed)
+        self.control_panel_layout.addWidget(self.game_start_btn)
+
+        self.status_panel_widget = QtWidgets.QWidget()
+        self.status_panel_layout = QtWidgets.QVBoxLayout(self.status_panel_widget)
+
+        self.status_label = QtWidgets.QTextBrowser()
+        self.status_label.setText("狀態：\n")
+        self.status_panel_layout.addWidget(self.status_label)
+
+        self.left_layout.addWidget(self.game_board_widget)
+        self.left_layout.addWidget(self.control_panel_widget)
+        self.left_layout.addWidget(self.status_panel_widget)
+
+        self.main_layout.addWidget(self.left_panel)
+
+        self.gv_size = 600
+        gs_size = self.gv_size
+        self.playground_gv = QtWidgets.QGraphicsView()
+        self.playground_gs = QtWidgets.QGraphicsScene()
+        self.playground_gs.setSceneRect(0, 0, gs_size, gs_size)
+        self.playground_gv.setScene(self.playground_gs)
+
+        self.main_layout.addWidget(self.playground_gv)
+
+    def create_game_buttons(self) -> None:
+        for y in range(3, 0, -1):
+            for x in range(1, 4):
+                btn = QtWidgets.QPushButton()
+                btn.setText(f"{x}{y}")
+                btn.clicked.connect(
+                    lambda checked=False, x=x, y=y: self.on_place_btn_pressed(x, y)
+                )
+
+                setattr(self, f"btn{x}{y}", btn)
+
+                self.game_board_layout.addWidget(btn, 3 - y, x - 1)
+
+    def disable_place_btn(self) -> None:
+        for i in range(1, 4):
+            for j in range(1, 4):
+                btn = getattr(self, f"btn{i}{j}")
+                btn.setEnabled(False)
+
+    def enable_place_btn(self) -> None:
+        for i in range(1, 4):
+            for j in range(1, 4):
+                btn = getattr(self, f"btn{i}{j}")
+                btn.setEnabled(True)
+
+    def on_game_start_btn_pressed(self) -> None:
+        self.pg.Reset()
+        self.set_next_graph_view()
+        self.status_label.setText(f"狀態\n下一位玩家是 {self.pg.next_player}")
+        self.enable_place_btn()
+
+    def on_place_btn_pressed(self, x: int, y: int) -> None:
+        if not self.pg.CheckPlaceable(x, y):
+            self.status_label.setText(
+                f"狀態\n下一位玩家是 {self.pg.next_player}\n無法落子"
+            )
+            return
+
+        self.pg.Place(x, y)
+        self.status_label.setText(f"狀態\n下一位玩家是 {self.pg.next_player}")
+
+        self.set_next_graph_view()
+
+        winner = self.pg.CheckWinner()
+        if winner != "none":
+            if winner == "draw":
+                self.status_label.setText("狀態\n平手")
+            else:
+                self.status_label.setText(f"狀態\n{winner} 獲勝")
+
+            self.disable_place_btn()
+
+    def set_next_graph_view(self) -> None:
+        next_fig = self.pg.RenderPlayground(self.pg.circle, self.pg.cross)
+        self.playground_canvas = FigureCanvasQTAgg(next_fig)
+        self.playground_gs.clear()
+        self.playground_gs.addWidget(self.playground_canvas)
+        self.playground_gv.setScene(self.playground_gs)
+
+    @override
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
         if event.key() == QtCore.Qt.Key.Key_Escape:
             instance = QtCore.QCoreApplication.instance()
             if instance is not None:
@@ -98,56 +142,3 @@ class MyWidget(QtWidgets.QWidget):
                 self.showNormal()
             else:
                 self.showFullScreen()
-        else:
-            pass
-
-    def disablePlaceBtn(self):
-        for i in range(1, 4):
-            for j in range(1, 4):
-                btn = getattr(self, f"btn{i}{j}")
-                btn.setEnabled(False)
-
-    def enablePlaceBtn(self):
-        for i in range(1, 4):
-            for j in range(1, 4):
-                btn = getattr(self, f"btn{i}{j}")
-                btn.setEnabled(True)
-
-    def onGameStartBtnPressed(self):
-        print("onGameStartBtnPressed")
-
-        self.pg.Reset()
-        self.setNextGraphView()
-        self.StatusLabel.setText(f"狀態\n下一位玩家是 {self.pg.next_player}")
-        self.enablePlaceBtn()
-
-    def onPlaceBtnPressed(self, x, y):
-        print("onPlaceBtnPressed")
-
-        print(f"{self.pg.next_player} place at ({x}, {y})\n")
-        if self.pg.CheckPlaceable(x, y) is False:
-            print(f"({x}, {y}) is not placeable\n")
-            self.StatusLabel.setText(
-                f"狀態\n下一位玩家是 {self.pg.next_player}\n無法落子"
-            )
-            return
-        self.pg.Place(x, y)
-        self.StatusLabel.setText(f"狀態\n下一位玩家是 {self.pg.next_player}")
-
-        self.setNextGraphView()
-
-        winner = self.pg.CheckWinner()
-        if winner != "none":
-            if winner == "draw":
-                self.StatusLabel.setText("狀態\n平手")
-            self.StatusLabel.setText(f"狀態\n{winner} 獲勝")
-            self.disablePlaceBtn()
-            return
-
-    def setNextGraphView(self):
-        next_fig = self.pg.RenderPlayground(self.pg.circle, self.pg.cross)
-        self.PlaygroundCanvas = FigureCanvasQTAgg(next_fig)
-        self.PlaygroundGS.clear()
-        self.PlaygroundGS.addWidget(self.PlaygroundCanvas)
-        self.PlaygroundGV.setGeometry(320, 0, self.GVsize, self.GVsize)
-        self.PlaygroundGV.setScene(self.PlaygroundGS)
