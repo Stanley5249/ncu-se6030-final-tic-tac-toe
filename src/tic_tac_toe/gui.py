@@ -141,7 +141,8 @@ class MyWidget(QtWidgets.QWidget):
         if winner != "none":
             if winner == "draw":
                 self.StatusLabel.setText("狀態\n平手")
-            self.StatusLabel.setText(f"狀態\n{winner} 獲勝")
+            else:
+                self.StatusLabel.setText(f"狀態\n{winner} 獲勝")
             self.disablePlaceBtn()
             return
 
