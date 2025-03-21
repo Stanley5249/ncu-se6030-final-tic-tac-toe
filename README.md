@@ -63,3 +63,5 @@ tic-tac-toe
 ```sh
 uv run tic-tac-toe
 ```
+
+> You can also use `ooxx` as an alias for `tic-tac-toe`.

@@ -1,15 +1,26 @@
 import sys
 
-from PySide6 import QtGui, QtWidgets
+from PySide6 import QtWidgets
+from qt_material import apply_stylesheet
 
-from .gui import MyWidget
+from .core import TicTacToe
+
+__all__ = ["main"]
 
 
-def main():
+def apply_custom_stylesheet(app: QtWidgets.QApplication) -> None:
+    extra = {
+        "font_family": "Consolas",
+        "font_size": "20px",
+    }
+    apply_stylesheet(app, "dark_teal.xml", extra=extra)
+
+
+def main() -> None:
     app = QtWidgets.QApplication(sys.argv)
-    app.setPalette(QtGui.QPalette(QtGui.QColor("#222")))
-    Form = MyWidget()
-    Form.show()
+    apply_custom_stylesheet(app)
+    game = TicTacToe()
+    game.gui.window.show()
     sys.exit(app.exec())
 
 
