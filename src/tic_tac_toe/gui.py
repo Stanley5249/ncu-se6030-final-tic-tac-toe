@@ -12,7 +12,7 @@ class MyWidget(QtWidgets.QWidget):
         super().__init__()
         self.setWindowTitle("OOXX")
         self.resize(1000, 600)
-        self.setStyleSheet("QWidget { font: 14px Microsoft JhengHei; }")
+        self.setStyleSheet("QWidget { font: 14px Microsoft JhengHei; color: #fff; background: #222; background-color: #222; }")
         self.setUpdatesEnabled(True)
         Icon = QtGui.QIcon()
         self.setWindowIcon(Icon)
